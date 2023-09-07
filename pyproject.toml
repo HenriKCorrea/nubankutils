@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "nubankutils"
+version = "0.1.0"
+description = ""
+authors = ["Henrique Krausburg Correa <hcorrea@ael.com.br>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pynubank = "^2.25.0"
+click = "^8.1.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+nubankutils = "nubankutils.main:main"
