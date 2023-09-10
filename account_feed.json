@@ -1,0 +1,49 @@
+{
+    "bill": {
+        "state": "open",
+        "summary": {
+            "due_date": "2023-10-08",
+            "close_date": "2023-10-01",
+            "late_interest_rate": "0.15",
+            "past_balance": 0,
+            "late_fee": "0.02",
+            "effective_due_date": "2023-10-09",
+            "spent_amount": "15.0",
+            "total_balance": 0,
+            "interest_rate": "0.14",
+            "interest": 0,
+            "total_cumulative": 1500,
+            "paid": 0,
+            "minimum_payment": 0,
+            "open_date": "2021-12-02"
+        },
+        "_links": {
+            "self": {
+                "href": "https://prod-global-webapp-proxy.nubank.com.br/api/proxy/AJxL5LDXAImKdmpZFGMinxwETO-sdSRLAQ.aHR0cHM6Ly9wcm9kLXMxNC1mYWNhZGUubnViYW5rLmNvbS5ici9hcGkvYWNjb3VudHMvNjFhOTNhZDQtYjkyYS00MDAwLWExYTMtNDhkZDEwNWQxMTdhL2JpbGxzL29wZW4"
+            },
+            "barcode": {
+                "href": "https://prod-global-webapp-proxy.nubank.com.br/api/proxy/AJxL5LAmswKTF-UIA-xOflO1zuqwzAWZXA.aHR0cHM6Ly9wcm9kLXMxNC1mYWNhZGUubnViYW5rLmNvbS5ici9hcGkvYWNjb3VudHMvNjFhOTNhZDQtYjkyYS00MDAwLWExYTMtNDhkZDEwNWQxMTdhL2JpbGxzL29wZW4vYm9sZXRvL2JhcmNvZGU"
+            },
+            "boleto_email": {
+                "href": "https://prod-global-webapp-proxy.nubank.com.br/api/proxy/AJxL5LBLwGQ3EzhkDHSg81tW4xhgavtQBQ.aHR0cHM6Ly9wcm9kLXMxNC1mYWNhZGUubnViYW5rLmNvbS5ici9hcGkvYWNjb3VudHMvNjFhOTNhZDQtYjkyYS00MDAwLWExYTMtNDhkZDEwNWQxMTdhL2JpbGxzL29wZW4vYm9sZXRvL2VtYWls"
+            }
+        },
+        "line_items": [
+            {
+                "amount": -1500,
+                "title": "Pagamento recebido",
+                "post_date": "2023-09-10",
+                "id": "64fe266f-b812-4bfb-976e-742ffab63607",
+                "category": "Pagamento"
+            },
+            {
+                "amount": 1500,
+                "type_detail": "phone_topup_brazil",
+                "title": "Recarga de celular",
+                "post_date": "2023-09-10",
+                "id": "64fe2563-8167-4e2f-b278-b16eeb1e08a4",
+                "category": "Ajuste"
+            }
+        ]
+    }
+}
