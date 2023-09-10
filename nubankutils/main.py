@@ -52,18 +52,25 @@ def main(
     password: str,
     bills: int,
 ):
-    nu = NubankEx()
-    nu.authenticate_with_qr_code(user, password)
+    nu = NubankEx()   
+
     try:
         pass
+        nu.authenticate_with_qr_code(user, password) 
         click.echo("Estamos dentro!")
-        # json.dump(nu.get_card_statements(), open("account_feed.json", "w"))
+        bill_list = nu.get_bills()
+        details = nu.get_bill_details(bill_list[0])
+        json.dump(details, open("account_feed.json", "w"))
 
         # TODO:
         # charmar getbills
         # adicionar faturas a partir da fatura aberta ate soma de faturas
 
         # nu.get_bill_details()
+
+    except Exception as e :
+        print("Deu Merda!")
+        print(e)
 
     finally:
         if nu.is_authenticated():
