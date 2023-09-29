@@ -29,6 +29,27 @@ Após escanear o QRCode pressione enter para continuar"""
 
         super().authenticate_with_qr_code(cpf, password, uuid)
 
+    def get_past_bills(self, bills: int = 1):
+        """Retorna as faturas anteriores a partir da fatura em aberto."""
+
+        bill_list = list(self.get_bills())
+        try:
+            open_bill_index = [
+                index
+                for index, item in enumerate(bill_list)
+                if dict(item).get("state") == "open"
+            ].pop()
+        except Exception as e:
+            raise Exception(f"Não foi possível encontrar a fatura em aberto: {e}")
+
+        filtered_bill_list = bill_list[open_bill_index : open_bill_index + bills]
+        detail_bill_list = [
+            dict(self.get_bill_details(bill_summary)).get("bill")
+            for bill_summary in filtered_bill_list
+        ]
+
+        return detail_bill_list
+
 
 @click.command()
 @click.option(
@@ -52,25 +73,14 @@ def main(
     password: str,
     bills: int,
 ):
-    nu = NubankEx()   
+    nu = NubankEx()
 
     try:
         pass
-        nu.authenticate_with_qr_code(user, password) 
-        click.echo("Estamos dentro!")
-        bill_list = nu.get_bills()
-        details = nu.get_bill_details(bill_list[0])
-        json.dump(details, open("account_feed.json", "w"))
-
-        # TODO:
-        # charmar getbills
-        # adicionar faturas a partir da fatura aberta ate soma de faturas
-
-        # nu.get_bill_details()
-
-    except Exception as e :
-        print("Deu Merda!")
-        print(e)
+        nu.authenticate_with_qr_code(user, password)
+        click.echo("Usuário autenticado com sucesso")
+        json.dump(nu.get_past_bills(bills), open("past_bills.json", "w"))
+        click.echo("Faturas salvas com sucesso")
 
     finally:
         if nu.is_authenticated():

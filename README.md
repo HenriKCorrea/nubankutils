@@ -29,3 +29,13 @@ Este projeto é apenas para fins educacionais e pessoais. Não é uma ferramenta
 
 Autor
 Este projeto foi desenvolvido por @HenriKCorrea e @rafaloliveira.
+
+
+# Dicas para debug
+
+## Armazenar credencias em uma variável de shell
+
+```powershell
+$code = Get-Credential -Verbose:$false
+poetry run nubankutils --user="$($code.GetNetworkCredential().Username)" --password="$($code.GetNetworkCredential().Password)"
+```
