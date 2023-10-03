@@ -14,7 +14,16 @@ class NubankEx(Nubank):
         )
 
     def authenticate_with_qr_code(self, cpf, password, uuid: str | None = None):
-        """Autentica o usuário utilizando o QRCode."""
+        """Autentica o usuário utilizando o QRCode.
+
+        Args:
+            cpf (str): CPF do usuário.
+            password (str): Senha do usuário.
+            uuid (str, optional): UUID do QRCode. Defaults to None.
+
+        Raises:
+            Exception: Falha ao autenticar o usuário utilizando QRCode.
+        """
 
         if uuid is None:
             qr_code: QRCode
@@ -27,9 +36,24 @@ Após escanear o QRCode pressione enter para continuar"""
             )
 
         super().authenticate_with_qr_code(cpf, password, uuid)
+        if not self.is_authenticated():
+            raise Exception(
+                """Falha ao autenticar o usuário utilizando QRCode.
+Verifique seu usuário, senha e se o QRCode foi escaneado corretamente."""
+            )
 
-    def get_past_bills(self, bills: int = 1):
-        """Retorna as faturas anteriores a partir da fatura em aberto."""
+    def get_past_bills(self, past_count: int = 1):
+        """Retorna as faturas anteriores a partir da fatura em aberto.
+
+        Args:
+            past_count (int, optional): Quantidade de faturas anteriores a serem retornadas. Defaults to 1.
+
+        Raises:
+            Exception: Não foi possível encontrar a fatura em aberto.
+
+        Returns:
+            list: Lista de faturas.
+        """
 
         bill_list = list(self.get_bills())
         try:
@@ -41,10 +65,21 @@ Após escanear o QRCode pressione enter para continuar"""
         except Exception as e:
             raise Exception(f"Não foi possível encontrar a fatura em aberto: {e}")
 
-        filtered_bill_list = bill_list[open_bill_index : open_bill_index + bills]
+        filtered_bill_list = bill_list[open_bill_index : open_bill_index + past_count]
+
+        return filtered_bill_list
+
+    def get_detailed_bills(self, bills: list):
+        """Retonar as faturas com detalhe das compras.
+
+        Args:
+            bills (list): Lista de faturas.
+
+        Returns:
+            list: Lista de faturas detalhadas."""
+
         detail_bill_list = [
-            dict(self.get_bill_details(bill_summary)).get("bill")
-            for bill_summary in filtered_bill_list
+            dict(self.get_bill_details(bill_summary)) for bill_summary in bills
         ]
 
         return detail_bill_list
@@ -71,9 +106,9 @@ def preprocess_detailed_bills(bills: list, fix_amount=True):
         if "line_items" in bill:
             bill = copy.deepcopy(bill)
             bill["line_items"] = [
-                preprocess_line_item(dict(item)) for item in bill.get("line_items", [])
+                preprocess_line_item(item) for item in bill.get("line_items", [])
             ]
 
         return bill
 
-    return [preprocess_bill(bill) for bill in bills]
+    return [preprocess_bill(dict(bill).get("bill") or bill) for bill in bills]

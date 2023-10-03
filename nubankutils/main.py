@@ -29,11 +29,12 @@ def main(
     nu = NubankEx()
 
     try:
-        pass
         nu.authenticate_with_qr_code(user, password)
         click.echo("Usuário autenticado com sucesso")
+        past_bills = nu.get_past_bills(bills)
+        detailed_bills = preprocess_detailed_bills(nu.get_detailed_bills(past_bills))
         json.dump(
-            preprocess_detailed_bills(nu.get_past_bills(bills)),
+            detailed_bills,
             open("past_bills.json", "w"),
         )
         click.echo("Faturas salvas com sucesso")
