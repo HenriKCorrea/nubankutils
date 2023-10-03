@@ -30,14 +30,15 @@ def main(
 
     try:
         nu.authenticate_with_qr_code(user, password)
-        click.echo("Usuário autenticado com sucesso")
+        click.echo("Usuário autenticado com sucesso!")
         past_bills = nu.get_past_bills(bills)
         detailed_bills = preprocess_detailed_bills(nu.get_detailed_bills(past_bills))
+        #TODO: Salvar as faturas em um arquivo .csv
         json.dump(
             detailed_bills,
             open("past_bills.json", "w"),
         )
-        click.echo("Faturas salvas com sucesso")
+        click.echo("Faturas salvas com sucesso!")
 
     finally:
         if nu.is_authenticated():

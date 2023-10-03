@@ -1,4 +1,5 @@
 import copy
+from datetime import datetime
 from pynubank import Nubank
 from qrcode.main import QRCode
 
@@ -83,6 +84,18 @@ Verifique seu usuário, senha e se o QRCode foi escaneado corretamente."""
         ]
 
         return detail_bill_list
+
+    def generate_str_timestamp(self):
+        """Gera uma string timestamp incluindo nome do usuario.
+
+        Returns:
+            str: Timestamp gerado no formato <NOME>_<DATA_HORA>.
+        """
+
+        return f"{dict(self.get_customer()).get('preferred_name')}_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+
+    def detailed_bills_to_csv(self, bills: list, filename: str):
+        pass
 
 
 def preprocess_detailed_bills(bills: list, fix_amount=True):
