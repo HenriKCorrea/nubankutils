@@ -1,7 +1,12 @@
 import json
 import click
 
-from nubankutils.utils import NubankEx, preprocess_detailed_bills
+from nubankutils.utils import (
+    NubankEx,
+    create_csv_file,
+    extract_line_items_from_detailed_bills,
+    preprocess_detailed_bills,
+)
 
 
 @click.command()
@@ -32,12 +37,35 @@ def main(
         nu.authenticate_with_qr_code(user, password)
         click.echo("Usuário autenticado com sucesso!")
         past_bills = nu.get_past_bills(bills)
-        detailed_bills = preprocess_detailed_bills(nu.get_detailed_bills(past_bills))
-        #TODO: Salvar as faturas em um arquivo .csv
-        json.dump(
-            detailed_bills,
-            open("past_bills.json", "w"),
+        detailed_bills = preprocess_detailed_bills(
+            nu.get_detailed_bills(past_bills), fix_amount=True, index_increment=True
         )
+        # Purcharces contains data from bills
+        # The first row is the header to export into CSV file
+        purcharses = [
+            [
+                "Data",
+                "Categoria",
+                "Descrição",
+                "Comentário",
+                "Valor",
+                "Parcelas",
+                "Parcela",
+            ],
+            *extract_line_items_from_detailed_bills(
+                detailed_bills,
+                [
+                    "post_date",
+                    "category",
+                    "title",
+                    "comment",
+                    "amount",
+                    "charges",
+                    "index",
+                ],
+            ),
+        ]
+        create_csv_file(f"nubank_card_{nu.generate_str_timestamp()}.csv", purcharses)
         click.echo("Faturas salvas com sucesso!")
 
     finally:

@@ -1,4 +1,5 @@
 import copy
+import csv
 from datetime import datetime
 from pynubank import Nubank
 from qrcode.main import QRCode
@@ -94,16 +95,14 @@ Verifique seu usuário, senha e se o QRCode foi escaneado corretamente."""
 
         return f"{dict(self.get_customer()).get('preferred_name')}_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}"
 
-    def detailed_bills_to_csv(self, bills: list, filename: str):
-        pass
 
-
-def preprocess_detailed_bills(bills: list, fix_amount=True):
+def preprocess_detailed_bills(bills: list, fix_amount=False, index_increment=False):
     """Preprocessa as faturas detalhadas para facilitar a visualização.
 
     Args:
         bills (list): Lista de faturas detalhadas.
-        fix_amount (bool, optional): Converte o valor da compra de centavos para reais. Defaults to True.
+        fix_amount (bool, optional): Converte o valor da compra de centavos para reais. Defaults to False.
+        index_increment (bool, optional): Incrementa a parcela atual por + 1. Defaults to False.
 
     Returns:
         list: Lista de faturas detalhadas preprocessadas.
@@ -112,7 +111,9 @@ def preprocess_detailed_bills(bills: list, fix_amount=True):
     def preprocess_line_item(lineItem: dict):
         result = copy.deepcopy(lineItem)
         if fix_amount and "amount" in result and isinstance(result["amount"], int):
-            result["amount"] = result["amount"] * 0.01
+            result["amount"] = result["amount"] / 100
+        if index_increment and "index" in result and isinstance(result["index"], int):
+            result["index"] = result["index"] + 1
         return result
 
     def preprocess_bill(bill: dict):
@@ -125,3 +126,33 @@ def preprocess_detailed_bills(bills: list, fix_amount=True):
         return bill
 
     return [preprocess_bill(dict(bill).get("bill") or bill) for bill in bills]
+
+
+def extract_line_items_from_detailed_bills(bills: list, values: list):
+    """Extrai os itens de compra das faturas detalhadas.
+
+    Args:
+        bills (list): Lista de faturas detalhadas.
+        values (list): Lista de valores a serem extraídos. Ex: ["amount", "title"]
+
+    Returns:
+        list: Lista de itens de compra.
+    """
+
+    extracted_items = []
+
+    for bill in bills:
+        bill_data = dict(bill).get("bill", bill)
+        line_items = dict(bill_data).get("line_items", [])
+
+        for item in line_items:
+            extracted_items.append([dict(item).get(value, "") for value in values])
+
+    return extracted_items
+
+
+def create_csv_file(csv_file_path: str, rows: list):
+    with open(csv_file_path, mode="w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["sep=,"])
+        writer.writerows(rows)
