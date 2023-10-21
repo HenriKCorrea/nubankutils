@@ -1,4 +1,3 @@
-import json
 import click
 
 from nubankutils.utils import (
@@ -40,6 +39,7 @@ def main(
         detailed_bills = preprocess_detailed_bills(
             nu.get_detailed_bills(past_bills), fix_amount=True, index_increment=True
         )
+        #TODO: Add extract feature to sort bills by date
         # Purcharces contains data from bills
         # The first row is the header to export into CSV file
         purcharses = [
