@@ -39,8 +39,7 @@ def main(
         detailed_bills = preprocess_detailed_bills(
             nu.get_detailed_bills(past_bills), fix_amount=True, index_increment=True
         )
-        #TODO: Add extract feature to sort bills by date
-        # Purcharces contains data from bills
+        # Purcharces contains data from bills sorted by date
         # The first row is the header to export into CSV file
         purcharses = [
             [
@@ -52,17 +51,21 @@ def main(
                 "Parcelas",
                 "Parcela",
             ],
-            *extract_line_items_from_detailed_bills(
-                detailed_bills,
-                [
-                    "post_date",
-                    "category",
-                    "title",
-                    "comment",
-                    "amount",
-                    "charges",
-                    "index",
-                ],
+            *sorted(
+                extract_line_items_from_detailed_bills(
+                    detailed_bills,
+                    [
+                        "post_date",
+                        "category",
+                        "title",
+                        "comment",
+                        "amount",
+                        "charges",
+                        "index",
+                    ],
+                ),
+                reverse=True,
+                key=lambda x: x[0],
             ),
         ]
         create_csv_file(f"nubank_card_{nu.generate_str_timestamp()}.csv", purcharses)
