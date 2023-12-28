@@ -139,6 +139,12 @@ def extract_line_items_from_detailed_bills(bills: list, values: list):
         list: Lista de itens de compra.
     """
 
+    def postProcess(key: str, value):
+        result = value
+        if key == "amount":
+            result = str(result).replace(".", ",")
+        return result
+
     extracted_items = []
 
     for bill in bills:
@@ -146,7 +152,9 @@ def extract_line_items_from_detailed_bills(bills: list, values: list):
         line_items = dict(bill_data).get("line_items", [])
 
         for item in line_items:
-            extracted_items.append([dict(item).get(value, "") for value in values])
+            extracted_items.append(
+                [postProcess(key, dict(item).get(key, "")) for key in values]
+            )
 
     return extracted_items
 
