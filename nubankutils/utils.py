@@ -101,7 +101,7 @@ def preprocess_detailed_bills(bills: list, fix_amount=False, index_increment=Fal
 
     Args:
         bills (list): Lista de faturas detalhadas.
-        fix_amount (bool, optional): Converte o valor da compra de centavos para reais. Defaults to False.
+        fix_amount (bool, optional): Converte o valor da compra de centavos para reais e inverte sinal. Defaults to False.
         index_increment (bool, optional): Incrementa a parcela atual por + 1. Defaults to False.
 
     Returns:
@@ -111,7 +111,7 @@ def preprocess_detailed_bills(bills: list, fix_amount=False, index_increment=Fal
     def preprocess_line_item(lineItem: dict):
         result = copy.deepcopy(lineItem)
         if fix_amount and "amount" in result and isinstance(result["amount"], int):
-            result["amount"] = result["amount"] / 100
+            result["amount"] = result["amount"] / -100
         if index_increment and "index" in result and isinstance(result["index"], int):
             result["index"] = result["index"] + 1
         return result
