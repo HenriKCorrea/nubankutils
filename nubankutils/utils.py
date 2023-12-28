@@ -160,7 +160,11 @@ def extract_line_items_from_detailed_bills(bills: list, values: list):
 
 
 def create_csv_file(csv_file_path: str, rows: list):
-    with open(csv_file_path, mode="w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["sep=,"])
+    with open(
+        csv_file_path,
+        mode="w",
+        newline="",
+    ) as file:
+        writer = csv.writer(file, delimiter=";")
+        writer.writerow(["sep=;"])
         writer.writerows(rows)
